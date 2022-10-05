@@ -3,6 +3,8 @@ const fs = require('fs').promises;
 const path = require('path');
 const bodyParser = require('body-parser');
 const generateToken = require('./utils/generateToken');
+const validateEmail = require('./middlewares/validateEmail');
+const validatePassword = require('./middlewares/validatePassword');
 
 const app = express();
 app.use(express.json());
@@ -30,7 +32,7 @@ app.get('/talker/:id', async (req, res) => {
   return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
 });
 
-app.post('/login', async (req, res, next) => {
+app.post('/login', validateEmail, validatePassword, async (req, res, next) => {
   const { email, password } = req.body;
   if ([email, password].includes(undefined)) {
     next();
