@@ -7,8 +7,8 @@ const validateTalk = (talkValue, res, value) => {
 module.exports = (req, res, next) => {
   const { talk } = req.body;
 
- return validateTalk(talk, res, '\"talk\"')
- || validateTalk(talk.watchedAt, res, '\"watchedAt\"')
- || validateTalk(talk.rate, res, '\"rate\"')
+ return validateTalk(talk, res, '"talk"')
+ || validateTalk(talk.watchedAt, res, '"watchedAt"')
+ || validateTalk(talk.rate, res, '"rate"')
  || next();
 };
