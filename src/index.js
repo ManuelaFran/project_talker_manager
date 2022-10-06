@@ -31,6 +31,17 @@ app.get('/talker', async (_req, res) => {
   }
 });
 
+// Requisito 8
+app.get('/talker/search', auth, async (req, res) => {
+  const { q } = req.query;
+  const speakingPeople = JSON.parse(await fs.readFile(pathTalker, 'utf8'));
+  if (!q) {
+    return res.status(HTTP_OK_STATUS).json(speakingPeople);
+  }
+  const searchTalker = speakingPeople.filter((item) => item.name.includes(q));
+  res.status(HTTP_OK_STATUS).json(searchTalker);
+});
+
 // Requisito 2
 app.get('/talker/:id', async (req, res) => {
   const speakingPeople = JSON.parse(await fs.readFile(pathTalker, 'utf8'));
@@ -57,6 +68,31 @@ validateWatchedAt, validateRate, async (req, res) => {
     const data = req.body;
     const newData = await writeFileTalker(data);
     res.status(201).json(newData);
+});
+
+// Requisito 6
+app.put('/talker/:id', auth, validateName, validateAge, validateTalk, validateRate, 
+validateWatchedAt, async (req, res) => {
+  const { id } = req.params;
+  const { name, age, talk } = req.body;
+  const speakingPeople = JSON.parse(await fs.readFile(pathTalker, 'utf-8'));
+  const addTalker = { name, age, talk };
+  const idTalker = speakingPeople.find((indexTalker) => indexTalker.id === Number(id));
+  if (!idTalker) {
+    return res.status(400).send({ message: 'Person not found' });
+  }
+  Object.assign(idTalker, addTalker);
+  await fs.writeFile(pathTalker, JSON.stringify(speakingPeople));
+   return res.status(HTTP_OK_STATUS).json(idTalker);
+});
+
+// Requisito 7
+app.delete('/talker/:id', auth, async (req, res) => {
+  const id = Number(req.params.id);
+  const speakingPeople = JSON.parse(await fs.readFile(pathTalker, 'utf-8'));
+  const personId = speakingPeople.find((person) => person.id === id); 
+  await fs.writeFile(pathTalker, JSON.stringify(personId));
+  return res.status(204).end();
 });
 
 // não remova esse endpoint, e para o avaliador funcionar

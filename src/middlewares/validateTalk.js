@@ -1,14 +1,25 @@
-const validateTalk = (talkValue, res, value) => {
-  if (!talkValue) {
-    return res.status(400).json({ message: `O campo ${value} é obrigatório` });
-  }
-};
+// const validateTalk = (talkValue, res, value) => {
+//   if (!talkValue) {
+//     return res.status(400).json({ message: `O campo ${value} é obrigatório` });
+//   }
+// };
+
+// module.exports = (req, res, next) => {
+//   const { talk } = req.body;
+
+//  return validateTalk(talk, res, '"talk"')
+//  || validateTalk(talk.watchedAt, res, '"watchedAt"')
+//  || next();
+// };
 
 module.exports = (req, res, next) => {
-  const { talk } = req.body;
+    const { talk } = req.body;
+    if (!talk) {
+      return res.status(400).json({ message: 'O campo "talk" é obrigatório' });
+    }
 
- return validateTalk(talk, res, '"talk"')
- || validateTalk(talk.watchedAt, res, '"watchedAt"')
- || validateTalk(talk.rate, res, '"rate"')
- || next();
-};
+    if (!talk.watchedAt) {
+      return res.status(400).json({ message: 'O campo "watchedAt" é obrigatório' });
+    }
+    next();
+  };
